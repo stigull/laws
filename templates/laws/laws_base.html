@@ -1,0 +1,11 @@
+{% extends 'info/info_base.html' %}
+{% load i18n law_tags %}
+
+{% block title %} {% trans 'Lög félagsins' %} | {{ block.super }} {% endblock %}
+
+{% block content %}
+<h1>{% trans 'Lög félagsins' %}</h1>
+{% get_law_tree laws.root_nodes.all %}
+{% endblock %} 
+
+{% block alt_content %}{% endblock %}

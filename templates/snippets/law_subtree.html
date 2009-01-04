@@ -1,0 +1,17 @@
+{% load templatetools %}
+<dt id="{{ node.get_positional_id }}"><a href="{{ node.get_absolute_url }}#{{ node.get_positional_id }}" title="{{ permalink_text }}">{{ node.node_type }} {{ node.number|romanize }}. 
+    {% if node.name %}{{ node.name }}{% endif %}</a>
+</dt>
+{% if node.content %}
+<dd>{% autoescape off %}{{ node.content_html }}{% endautoescape %}</dd>
+{% endif %}
+{% if subtrees %}
+<dd>
+    <dl>
+    {% for subtree in subtrees %}
+        {{ subtree }}
+    {% endfor %}
+    </dl>
+</dd>
+{% endif %}
+
