@@ -1,4 +1,5 @@
 #coding: utf-8
+from markdown2 import markdown
 
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -6,11 +7,8 @@ from django.utils.translation import gettext
 from django.db.models.signals import pre_delete, post_delete
 
 from utils.stringformatting import slugify
-try:
-    from markdown2 import markdown
-except ImportError:
-    def markdown(string):
-        return string
+
+
 
 
 class NodeType(models.Model):
