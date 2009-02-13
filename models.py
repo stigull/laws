@@ -55,12 +55,15 @@ class LawNode(models.Model):
     parent = models.ForeignKey("self", verbose_name = _(u"Foreldri hnútsins"), related_name = "children", null = True, blank = True)
 
     class Meta:
-        ordering = ("-node_type__treelevel", "number",)
+        ordering = ("number", "parent__number")
         verbose_name = _(u"Hnútur í lagatréi")
         verbose_name_plural = _(u"Hnútar í lagatréi")
 
     def __unicode__(self):
-        return "%s %s: %s" % (self.node_type, self.number, self.name)
+        if self.parent:
+            return u"%s > %s %s: %s" % (self.parent, self.node_type, self.number, self.name)
+        else:
+            return u"%s %s: %s" % (self.node_type, self.number, self.name)
 
     def has_children(self):
         """
@@ -74,7 +77,10 @@ class LawNode(models.Model):
         Usage:  node_positional_id = node.get_positional_id()
         After:  node_positional_id is a unique string for this node that represents it's position in the law
         """
-        return "%s-%s" % (slugify(self.node_type.name), self.number)
+        if self.parent:
+            return u"%s-%s-%s" % (self.parent.get_positional_id(), slugify(self.node_type.name), self.number)
+        else:
+            return u"%s-%s" % (slugify(self.node_type.name), self.number)
 
     def save(self):
         self.content_html = markdown(self.content)
@@ -85,7 +91,8 @@ def delete_node_handler(sender, instance, **kwargs):
     Renumbers the entire law tree when a node gets deleted
     """
     parent = instance.parent
-
+    print instance
+    print parent
     if parent is None:
         #We are at root level
         tree = instance.law_tree.all()[0]
